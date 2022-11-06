@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title style="text-align:center;">
+      {{artist.title}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="text-align:right;">
+
+  <!-- Search bar -->
+  <ion-searchbar animated="true" placeholder="...بحث" [(ngModel)]="term"></ion-searchbar>
+
+   <!-- List Data -->
+  <ion-item async *ngFor="let item of albums | filter:term" style="text-align:right;" (click)="navigate(item);">
+    <ion-thumbnail slot="start">
+      <img alt="" src={{item.ThumbnailUrl}} />
+    </ion-thumbnail>
+    <ion-label style="float: right;">
+      {{item.Title}}
+      <p style="font-size:x-small">{{item.Title}} ({{item.ItemCount}})</p>
+    </ion-label>
+  </ion-item>
+
+    <!-- <<div *ngIf="selectedItem" padding>
+      You navigated here from <b>{{selectedItem.title }}</b>
+    </div> -->
+
+</ion-content>
+
+

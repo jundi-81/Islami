@@ -1,5 +1,7 @@
 {
   "name": "Islami",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

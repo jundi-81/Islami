@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title style="text-align:center;">
+      {{title}}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="text-align:right;">
+
+  <!-- Search bar -->
+  <ion-searchbar placeholder="...بحث" [(ngModel)]="term" animated="true"></ion-searchbar>
+
+  <!-- List Data -->
+  <ion-item async *ngFor="let item of videos | filter:term" style="text-align:right" (click)="play(item.Id);">
+    <ion-thumbnail slot="start">
+      <img alt="" src={{item.ThumbnailUrl}} />
+    </ion-thumbnail>
+    <ion-label>
+      {{item.Title.length > 38 ? "..."+item.Title.slice(0,38) : item.Title}}
+      <p style="font-size:smaller">{{item.Title}}</p>
+    </ion-label>
+  </ion-item>
+
+</ion-content>
+
