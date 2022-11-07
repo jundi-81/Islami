@@ -2,12 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ServicesService } from '../services.service';
 import { Router } from '@angular/router';
 import { Artist } from '../video';
-import {
-  ActionPerformed,
-  PushNotificationSchema,
-  PushNotifications,
-  Token,
-} from '@capacitor/push-notifications';
+import { FirebaseX } from '@ionic-native/firebase-x/ngx';
 
 @Component({
   selector: 'app-scholars',
@@ -17,50 +12,24 @@ import {
 export class ScholarsPage implements OnInit {
   public artists: Artist[];
   private router: Router;
+  private firebaseX: FirebaseX;
 
-  constructor(route: Router, services: ServicesService) {
+  constructor(firebase: FirebaseX, route: Router, services: ServicesService) {
        services.getArtists().subscribe(data=> this.artists = data);
        this.router = route;
+       this.firebaseX = firebase;
     }
 
   ngOnInit() {
-    // Request permission to use push notifications
-    // iOS will prompt user and return if they granted permission or not
-    // Android will just grant without prompting
-    /*
-    PushNotifications.requestPermissions().then(result => {
-      if (result.receive === 'granted') {
-        console.log('granted');
-        // Register with Apple / Google to receive push via APNS/FCM
-        PushNotifications.register();
-        console.log('after push notification');
-      } else {
-        // Show some error
-        console.log('error');
-      }
-    });
-    */
-    PushNotifications.addListener('registration', (token: Token) => {
-      alert('Push registration success, token: ' + token.value);
-    });
+    this.firebaseX.getToken()
+    .then(token => console.log(`The token is ${token}`)) // save the token server-side and use it to push notifications to this device
+    .catch(error => console.error('Error getting token', error));
 
-    PushNotifications.addListener('registrationError', (error: any) => {
-      alert('Error on registration: ' + JSON.stringify(error));
-    });
+    this.firebaseX.onMessageReceived()
+      .subscribe(data => console.log(`User opened a notification ${data}`));
 
-    PushNotifications.addListener(
-      'pushNotificationReceived',
-      (notification: PushNotificationSchema) => {
-        alert('Push received: ' + JSON.stringify(notification));
-      },
-    );
-
-    PushNotifications.addListener(
-      'pushNotificationActionPerformed',
-      (notification: ActionPerformed) => {
-        alert('Push action performed: ' + JSON.stringify(notification));
-      },
-    );
+    this.firebaseX.onTokenRefresh()
+    .subscribe((token: string) => console.log(`Got a new token ${token}`));
   }
 
   navigate(selectedArtist: Artist){
